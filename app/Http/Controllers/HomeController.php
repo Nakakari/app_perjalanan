@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\M_cabang;
+use App\Models\M_jabatan;
 
 class HomeController extends Controller
 {
@@ -23,7 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $data = [
+            'cab' => M_cabang::getAll(),
+            'jab' => M_jabatan::getJab(),
+        ];
+        return view('home', $data);
     }
 
     /**
@@ -33,6 +39,19 @@ class HomeController extends Controller
      */
     public function adminHome()
     {
-        return view('adminHome');
+        $data = [
+            'cab' => M_cabang::getAll(),
+            'jab' => M_jabatan::getJab(),
+        ];
+        return view('adminHome', $data);
+    }
+
+    public function salesHome()
+    {
+        $data = [
+            'cab' => M_cabang::getAll(),
+            'jab' => M_jabatan::getJab(),
+        ];
+        return view('salesHome', $data);
     }
 }

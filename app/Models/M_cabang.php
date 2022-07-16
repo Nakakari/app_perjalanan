@@ -22,4 +22,12 @@ class M_cabang extends Model
             ->select('*')
             ->get();
     }
+
+    public static function getKode($id_cabang)
+    {
+        return DB::table('cabang')
+            ->select('kode_area')
+            ->where('id_cabang', $id_cabang)
+            ->first();
+    }
 }

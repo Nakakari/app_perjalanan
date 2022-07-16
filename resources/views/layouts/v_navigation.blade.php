@@ -24,18 +24,18 @@
                     <ul>
                         <li> <a href="/cabang"><i class="bx bx-right-arrow-alt"></i>Cabang</a>
                         <li> <a href="/pengguna"><i class="bx bx-right-arrow-alt"></i>Pengguna</a>
-                        <li> <a href="/jenis_jabatan"><i class="bx bx-right-arrow-alt"></i>Jenis Jabatan</a>
+                        <li> <a href="/jabatan"><i class="bx bx-right-arrow-alt"></i>Jenis Jabatan</a>
                     </ul>
                 </li>
-                <li> <a href="/pengajar/"><i class="bx bx-right-arrow-alt"></i>Pelanggan</a>
-                <li> <a href="/pengajar/"><i class="bx bx-right-arrow-alt"></i>Akun Bank</a>
-                <li> <a href="/pengajar/"><i class="bx bx-right-arrow-alt"></i>Status Kondisi Resi</a>
+                <li> <a href="/pelanggan"><i class="bx bx-right-arrow-alt"></i>Pelanggan</a>
+                <li> <a href="/akunbank"><i class="bx bx-right-arrow-alt"></i>Akun Bank</a>
+
                 </li>
             </ul>
         </li>
         <li>
-            <a href="/datasekolah" class="parent-icon">
-                <div class="parent-icon"><i class='bx bx-home-circle'></i>
+            <a href="/penjualan" class="parent-icon">
+                <div class="parent-icon"><i class="fadeIn animated bx bx-archive"></i>
                 </div>
                 <div class="menu-title">Penjualan</div>
             </a>
@@ -61,19 +61,19 @@
                 <div class="menu-title">Pengiriman</div>
             </a>
         </li>
-    @elseif (Auth::user()->is_admin == 2)
+    @elseif (Auth::user()->peran == 5)
         <li>
-            <a href="/datakelas" class="parent-icon">
-                <div class="parent-icon"><i class='bx bx-user-pin'></i>
+            <a href="/pengiriman/{{ Auth::user()->id_cabang }}" class="parent-icon">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
                 </div>
-                <div class="menu-title">Kelas</div>
+                <div class="menu-title">Pengiriman</div>
             </a>
         </li>
         <li>
-            <a href="/pembelajaran" class="parent-icon">
+            <a href="/daftartugas/{{ Auth::user()->id_cabang }}" class="parent-icon">
                 <div class="parent-icon"><i class="fadeIn animated bx bx-spreadsheet"></i>
                 </div>
-                <div class="menu-title">Pembelajaran</div>
+                <div class="menu-title">Daftar Tugas</div>
             </a>
         </li>
         <li>

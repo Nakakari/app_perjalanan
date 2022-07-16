@@ -1,19 +1,17 @@
 <div class="user-box dropdown">
     <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
         data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="{{ url('') }}/foto_user/{{ Auth::user()->foto }}" class="user-img" alt="user avatar">
+        <img src="{{ url('') }}/foto_pengguna/{{ Auth::user()->file_foto }}" class="user-img" alt="user avatar">
         <div class="user-info ps-3">
 
             <p class="user-name mb-0">{{ Auth::user()->name }}</p>
 
             <p class="designattion mb-0">
-                @if (Auth::user()->is_admin == 1)
-                    Admin
-                @elseif (Auth::user()->is_admin == 2)
-                    Pengajar
-                @else
-                    Siswa
-                @endif
+                @foreach ($jab as $j)
+                    @if (Auth::user()->peran == $j->id_jabatan)
+                        {{ $j->nama_jabatan }}
+                    @endif
+                @endforeach
             </p>
 
         </div>

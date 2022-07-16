@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\M_cabang;
+use App\Models\M_jabatan;
 
 class CabangController extends Controller
 {
     public function index()
     {
         $data = [
-            'cab' => M_cabang::getAll()
+            'cab' => M_cabang::getAll(),
+            'jab' => M_jabatan::getJab(),
         ];
         return view('Admin.Cabang.v_cabang', $data);
     }

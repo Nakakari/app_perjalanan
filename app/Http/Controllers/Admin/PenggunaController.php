@@ -21,6 +21,7 @@ class PenggunaController extends Controller
             'usr' => M_pengguna::getAll()
         ];
         return view('Admin.Pengguna.v_akun', $data);
+        // dd($data['usr']);
     }
 
     public function jenisJabatan()
@@ -30,6 +31,7 @@ class PenggunaController extends Controller
         ];
         $orderBy = $columns[request()->input("order.0.column")];
         $data = M_jabatan::select('*');
+        // $data2 = M_cabang::select('*');
 
         $recordsFiltered = $data->get()->count(); //menghitung data yang sudah difilter
 
@@ -51,6 +53,7 @@ class PenggunaController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data,
+            // 'data2' => $data2,
             'all_request' => request()->all()
         ]);
     }
@@ -118,12 +121,21 @@ class PenggunaController extends Controller
         return response()->json($data);
     }
 
+    public function kodeAreaEdited(Request $request)
+    {
+        $data = M_cabang::where('id_cabang', $request->get('id_cabangEdited'))
+            ->pluck('kode_area', 'id_cabang');
+        // $data = M_cabang::select(['kode_area', 'id_cabang'])
+        //     ->where('id_cabang', $request->get('id_cabangEdited'))->first();
+        return response()->json($data);
+    }
+
     public function addPengguna(Request $request)
     {
         $this->validate($request, [
             'name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             "id_cabang" => 'required',
             "tgl_lhr" => 'required',
             "alamat" => 'required',
@@ -138,6 +150,40 @@ class PenggunaController extends Controller
         $data->id_cabang = $request->get('id_cabang');
         $data->tgl_lhr = $request->get('tgl_lhr');
         $data->alamat = $request->get('alamat');
+        $data->peran = $request->get('id_jabatan');
+        $file = $request->file('file_foto');
+
+        $nama_file = time() . "_" . $file->getClientOriginalName();
+
+        // isi dengan nama folder tempat kemana file diupload
+        $tujuan_upload = 'foto_pengguna';
+        $file->move($tujuan_upload, $nama_file);
+        $data->file_foto = $nama_file;
+
+        $data->save();
+
+        return redirect()->back()->with('pesan', 'Data Berhasil Ditambah!!');
+    }
+
+    public function editPengguna(Request $request, $id_pengguna)
+    {
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            "id_cabang" => 'required',
+            "tgl_lhr" => 'required',
+            "alamat" => 'required',
+            "id_jabatan" => 'required',
+            'file_foto' => 'required|file|image|mimes:jpeg,png,jpg',
+        ]);
+
+        $data =  M_pengguna::find($id_pengguna);
+        $data->name = $request->get('name');
+        $data->password = Hash::make($request->get('password'));
+        $data->email = $request->get('email');
+        $data->id_cabang = $request->get('id_cabang');
+        $data->tgl_lhr = $request->get('tgl_lhr');
         $data->alamat = $request->get('alamat');
         $data->peran = $request->get('id_jabatan');
         $file = $request->file('file_foto');
@@ -147,8 +193,9 @@ class PenggunaController extends Controller
         // isi dengan nama folder tempat kemana file diupload
         $tujuan_upload = 'foto_pengguna';
         $file->move($tujuan_upload, $nama_file);
+        $data->file_foto = $nama_file;
 
-        $data->save();
+        $data->update();
 
         return redirect()->back()->with('pesan', 'Data Berhasil Ditambah!!');
     }

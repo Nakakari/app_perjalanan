@@ -6,20 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class M_jabatan extends Model
+class M_akunBank extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nama_jabatan'
+        'nama_bank',
+        'no_rek',
+        'an'
     ];
-    protected $table = 'jabatan';
-    protected $primaryKey = 'id_jabatan';
+    protected $table = 'bank';
+    protected $primaryKey = 'id_bank';
     public $timestamps = false;
 
-    public static function getJab()
+    public static function getAll()
     {
-        return DB::table('jabatan')
-            ->select('*')
+        return DB::table('bank')
+            ->select(
+                '*'
+            )
             ->get();
     }
 }
