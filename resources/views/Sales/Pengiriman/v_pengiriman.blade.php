@@ -1,5 +1,14 @@
 @extends('layouts.main')
-
+@section('css')
+    <style>
+        .table-header {
+            text-align: center;
+            font-style: bold;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+    </style>
+@stop
 @section('isi')
     @if ($id_cabang == Auth::user()->id_cabang)
         <!--breadcrumb-->
@@ -25,7 +34,7 @@
                                 <p class="mb-0 text-secondary">Total Omset</p>
                                 {{-- <h4 class="my-1">Rp{{ number_format($totalOmset->jumlah, 2, ',', '.') }}</h4> --}}
                                 <h4 id="omsetheading" class="my-1 omsetheading">
-                                    Rp{{ number_format($totalOmset->jumlah, 2, ',', '.') }}</h4>
+                                    Rp{{ number_format($totalOmset->jumlah) }}</h4>
                                 <h4 id="omsetheading2" class="my-1 omsetheading2">
                                 </h4>
                                 <p id="p_omset" class="mb-0 font-13 text-success p_omset"><strong>Default</strong></p>
@@ -187,6 +196,84 @@
     @else
         <p>Whoops!</p>
     @endif
+    {{-- Show PDF --}}
+    <div id="dvContainer">
+        This content needs to be printed.
+    </div>
+@stop
+@section('modal')
+    {{-- Modal Tambah --}}
+    <div class="modal fade" id="modal-detail" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cetak Bukti Resi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table width="100%">
+                        <tr>
+                            <td width="10%">
+                                <img src="{{ url('') }}/img_aplikasi/ase1.png" style="height: 116px"
+                                    alt="">
+                            </td>
+                            <td width="70%" style="vertical-align: top;">
+                                <div style="text-align: center">
+                                    <span style="font-size: 42px; color:#363f93; font-style: bold">AISY SAE
+                                        BERSAUDARA</span>
+                                    <p style="padding:0; margin:0; font-size: 14px; font-style: bold">
+                                        Kantor pusat JL. Semut Kali, Ruko Semut Indah Blok B No.14 Surabaya <br>
+                                        Tlp: 031-99220818 Email: <span
+                                            style="color:#363f93"><u>aisysaeexpress1@gmail.com</u></span>
+                                        Website: <br>
+                                        aisysaeexpress.com
+                                    </p>
+                                </div>
+                            </td>
+                            <td width="20%">
+                                <p
+                                    style="font-size: 32px; color:#363f93; font-style: bold; padding: 4px 4px; border: 3px solid red; display: inline-block; border-radius: 8px">
+                                    DEFG
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%" style="margin-top: -16px;">
+                        <tr>
+                            <td width="35%"></td>
+                            <td width="65%">
+                                <div
+                                    style="color:#363f93; border: 3px solid #ee1d23; display: inline-block; font-size: 24px; font-style:bold; padding: 2px 18px; margin-right: 8px">
+                                    SURAT MUATAN</div>
+                                <div
+                                    style="padding: 2px 0px; font-size: 28px; font-style:bold; display: inline-block; color:#363f93;">
+                                    123
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table width="100%">
+                        <tr style="display: block; min-height: 80px; max-height: 80px;">
+                            <td width="50%"
+                                style="padding-left: 12px; padding-right: 2px; vertical-align: top; text-transform: capitalize">
+                                <b>PENGIRIM :</b> ABC ?> <br>
+                                DEFG
+                                <br>
+                                DEFG
+                            </td>
+                            <td width="50%" style="vertical-align: top;">
+                                <b>PENERIMA :</b> DEFG<br>
+                                DEFG
+                                <br>
+                                DEFG
+                            </td>
+                        </tr>
+                    </table>
+                    <a href="javascript:window.print()">Print</a>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 @section('js')
     <script type="text/javascript">
@@ -273,7 +360,8 @@
                     "render": function(data, type, row, meta) {
                         return `<div class="d-flex order-actions">
                             <a href="javascript:;" class="ms-3" onclick="toggleStatus('${row.id_pengiriman}')"><i class="fadeIn animated bx bx-reset"></i></a>
-                            <a href="javascript:;" class="ms-3" ><i class="lni lni-printer"></i></a>		   
+                            <a href="{{ url('') }}/pengiriman/print/${row.id_pengiriman}" id="btnprn" target="_blank" class="ms-3"><i class="lni lni-printer"></i></a>
+                            <a class="ms-3" data-bs-toggle="modal" data-bs-target="#modalDetail"><i class='lni lni-eye'></i></a>		   
                         </div>`;
                     }
                     //  <a data-bs-toggle="modal" data-bs-target="#modalDetail"><i class='lni lni-eye'></i></a>
@@ -283,7 +371,7 @@
 
         function toggleStatus(id_pengiriman) {
 
-            const _c = confirm("Apakah Anda yakin?")
+            const _c = confirm("Apakah Anda yakin mengubah status pengiriman?")
             if (_c === true) {
                 let pengiriman = list_pengiriman[id_pengiriman]
                 let status_update = ''
@@ -310,8 +398,6 @@
             }
         };
 
-        fill_show();
-
         function fill_show(dari_tanggal, sampai_tanggal, filter_kondisi) {
             // console.log(dari_tanggal, sampai_tanggal, filter_kondisi)
             $.ajax({
@@ -331,7 +417,9 @@
                         $('#tonase').addClass('tonase2').text(res[2].kg);
                         $(this).addClass('tonase2').removeClass('tonase');
                         //Total Omset
-                        $('#omsetheading').addClass('omsetheading2').text('Rp' + res[1].jumlah);
+                        var n = res[1].jumlah;
+                        var nilai = String(n).replace(/(.)(?=(\d{3})+$)/g, '$1,')
+                        $('#omsetheading').addClass('omsetheading2').text('Rp' + nilai);
                         $(this).addClass('omsetheading2').removeClass('omsetheading');
                         $('#p_omset').addClass('p_omset2').text(dari_tanggal + ' s.d. ' + sampai_tanggal);
                         $(this).addClass('p_omset2').removeClass('p_omset');
@@ -366,12 +454,14 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(res) {
-                    console.log(res[3])
+                    // console.log(res[3])
                     $('#transaksi').text(res[0]);
                     //Tonase
                     if (res[3].kg != null || res[4].jumlah != null) {
+                        var n = res[4].jumlah;
+                        var nilai = String(n).replace(/(.)(?=(\d{3})+$)/g, '$1,')
                         //Total Omset
-                        $('#omsetheading').addClass('omsetheading2').text('Rp' + res[4].jumlah);
+                        $('#omsetheading').addClass('omsetheading2').text('Rp' + nilai);
                         $(this).addClass('omsetheading2').removeClass('omsetheading');
                         $('#p_omset').addClass('p_omset2').text(res[1].tgl_masuk + ' s.d. ' + res[2].tgl_masuk);
                         $(this).addClass('p_omset2').removeClass('p_omset');
@@ -410,7 +500,9 @@
                         $('#tonase').addClass('tonase2').text(res[2].kg);
                         $(this).addClass('tonase2').removeClass('tonase');
                         //Total Omset
-                        $('#omsetheading').addClass('omsetheading2').text('Rp' + res[1].jumlah);
+                        var n = res[1].jumlah;
+                        var nilai = String(n).replace(/(.)(?=(\d{3})+$)/g, '$1,')
+                        $('#omsetheading').addClass('omsetheading2').text('Rp' + nilai);
                         $(this).addClass('omsetheading2').removeClass('omsetheading');
                         $('#p_omset').addClass('p_omset2').text(dari_tanggal + ' s.d. ' + sampai_tanggal);
                         $(this).addClass('p_omset2').removeClass('p_omset');
@@ -435,6 +527,29 @@
             })
         }
 
+        function fill_tanpa_filter() {
+            $.ajax({
+                url: "{{ url('') }}/show_fill_tanpa_filter/{{ $id_cabang }}",
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(res) {
+                    var n = res[0].jumlah;
+                    var nilai = String(n).replace(/(.)(?=(\d{3})+$)/g, '$1.')
+                    $('#transaksi').text(res[1]);
+                    //Total Omset
+                    $('#omsetheading').addClass('omsetheading2').text('Rp' + nilai);
+                    $(this).addClass('omsetheading2').removeClass('omsetheading');
+                    $('#p_omset').addClass('p_omset2').text(res[3].tgl_masuk + ' s.d. ' + res[4].tgl_masuk);
+                    $(this).addClass('p_omset2').removeClass('p_omset');
+                    $('#tonase').addClass('tonase2').text(res[2].kg);
+                    $(this).addClass('tonase2').removeClass('tonase');
+
+                }
+            })
+        }
+
         function filter() {
             table.ajax.reload(null, false)
             // console.log(recordsTotal)
@@ -450,8 +565,21 @@
                 // alert('aa')
             } else if (dari_tanggal != '' || sampai_tanggal != '') {
                 fill_show(dari_tanggal, sampai_tanggal, filter_kondisi);
+            } else {
+                fill_tanpa_filter();
+
             }
 
         }
+
+        function cetakPDF(id_pengiriman) {
+            const pengiriman = list_pengiriman[id_pengiriman]
+            console.log(pengiriman)
+            $('#modal-detail').modal('show')
+        }
+
+        $(document).ready(function() {
+            $('#btnprn').printPage();
+        });
     </script>
 @stop

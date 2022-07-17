@@ -10,6 +10,7 @@ use App\Models\M_pelanggan;
 use App\Models\M_pengiriman;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengirimanController extends Controller
 {
@@ -243,6 +244,7 @@ class PengirimanController extends Controller
             // ->join('pelanggan', 'pelanggan.id_pelanggan', '=', 'pengiriman.id_pelanggan')
             ->join('tbl_status_pengiriman', 'tbl_status_pengiriman.id_stst_pngrmn', '=', 'pengiriman.status_sent')
             ->where('pengiriman.dari_cabang', $id_cabang)
+            // ->orWhere('pengiriman.id_cabang_tujuan', $id_cabang)
             // ->orWhere('pengiriman.id_cabang')
             ->orderBy('id_pengiriman', "asc");
 
@@ -318,5 +320,22 @@ class PengirimanController extends Controller
             $jumlah = M_pengiriman::select(DB::raw("SUM(biaya) as jumlah"))->where('pengiriman.status_sent', request()->status)->where('dari_cabang', $id_cabang)->first();
             return [$data, $tgl_awal, $tgl_akhir, $berat, $jumlah];
         }
+    }
+
+    public function printResi($id_pengiriman)
+    {
+        $pengiriman = M_pengiriman::getDetailData($id_pengiriman);
+        return view('Sales.cetakresi')->with('pengiriman', $pengiriman);
+        // dd($pengiriman);
+    }
+
+    public function showFillTanpaFilter($id_cabang)
+    {
+        $totalOmset = M_pengiriman::getTotalOmset($id_cabang);
+        $totalTransaksi = M_pengiriman::getTotalTransaksi($id_cabang);
+        $tonase = M_pengiriman::getTotalTonase($id_cabang);
+        $tgl_awal = M_pengiriman::select('pengiriman.tgl_masuk')->where('dari_cabang', $id_cabang)->first();
+        $tgl_akhir = M_pengiriman::select('pengiriman.tgl_masuk')->where('dari_cabang', $id_cabang)->latest('tgl_masuk')->first();
+        return [$totalOmset, $totalTransaksi, $tonase, $tgl_awal, $tgl_akhir];
     }
 }

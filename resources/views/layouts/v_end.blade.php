@@ -20,5 +20,6 @@
 <script src="{{ asset('template') }}/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js"></script>
 <!--app JS-->
 <script src="{{ asset('template') }}/assets/js/app.js"></script>
+<script type="text/javascript" src="{{ asset('template') }}/assets/js/jquery.printPage.js"></script>
 
 @yield('js')

@@ -26,6 +26,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+// Route::get('/', function () {
+//     return view('cobaPDF');
+// });
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -80,6 +84,7 @@ Route::group(['middleware' => 'is_sales'], function () {
     Route::get('/pengiriman/{id_cabang}', [PengirimanController::class, 'index'])->name('pengiriman');
     Route::post('/pengiriman/{id_cabang}', [PengirimanController::class, 'listPengiriman']);
     Route::get('/add/pengiriman/{id_cabang}', [PengirimanController::class, 'addPengiriman'])->name('tambah.pengiriman');
+    Route::get('/pengiriman/print/{id_pengiriman}', [PengirimanController::class, 'printResi']);
 
     Route::post('/kodeareapengguna', [PenggunaController::class, 'kodeArea']);
     Route::post('/kodepelanggan', [PengirimanController::class, 'kodePelanggan']);
@@ -88,6 +93,7 @@ Route::group(['middleware' => 'is_sales'], function () {
     Route::post('/show_fill/{id_cabang}', [PengirimanController::class, 'showFill']);
     Route::post('/show_fill_kondisi/{id_cabang}', [PengirimanController::class, 'showFillKondisi']);
     Route::post('/show_fill_all/{id_cabang}', [PengirimanController::class, 'showFillAll']);
+    Route::post('/show_fill_tanpa_filter/{id_cabang}', [PengirimanController::class, 'showFillTanpaFilter']);
 
     Route::get('/daftartugas/{id_cabang}', [TugasController::class, 'index'])->name('daftartugas');
 });

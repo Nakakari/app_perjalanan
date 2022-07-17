@@ -23,5 +23,5 @@
     <link rel="stylesheet" href="{{ asset('template') }}/assets/css/semi-dark.css" />
     <link rel="stylesheet" href="{{ asset('template') }}/assets/css/header-colors.css" />
     @yield('css')
-    <title>-</title>
+    <title>Aisysaeexpress</title>
 </head>

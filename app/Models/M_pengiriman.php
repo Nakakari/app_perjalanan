@@ -44,4 +44,16 @@ class M_pengiriman extends Model
             ->where('dari_cabang', $id_cabang)
             ->count();
     }
+
+    public static function getDetailData($id_pengiriman)
+    {
+        return DB::table('pengiriman')
+            ->select(
+                '*'
+            )
+            ->join('cabang', 'pengiriman.id_cabang_tujuan', '=', 'cabang.id_cabang')
+            ->join('tipe_pembayaran', 'tipe_pembayaran.id_pembayaran', '=', 'pengiriman.tipe_pembayaran')
+            ->where('id_pengiriman', $id_pengiriman)
+            ->first();
+    }
 }
